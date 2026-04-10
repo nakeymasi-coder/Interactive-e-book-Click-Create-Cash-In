@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Click, Create, Cash In</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#10172d;
+      --panel-2:#151f3a;
+      --soft:#1c2848;
+      --card:rgba(255,255,255,0.06);
+      --stroke:rgba(255,255,255,0.10);
+      --text:#f7f8fc;
+      --muted:#b6bfd8;
+      --blue:#5b6cff;
+      --gold:#f4bf57;
+      --pink:#ff8cc6;
+      --green:#78d6a6;
+      --shadow:0 18px 50px rgba(0,0,0,.35);
+      --radius-xl:26px;
+      --radius-lg:18px;
+      --radius-md:14px;
+      --radius-sm:10px;
+      --nav-w:290px;
+      --content-h:min(86vh, 920px);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(91,108,255,.24), transparent 25%),
+        radial-gradient(circle at 90% 10%, rgba(255,140,198,.15), transparent 20%),
+        linear-gradient(135deg,#090d1b 0%, #0b1020 35%, #0f1730 100%);
+      overflow:hidden;
+    }
+
+    .shell{
+      width:min(1480px, 96vw);
+      height:var(--content-h);
+      margin:calc((100vh - var(--content-h)) / 2) auto;
+      padding:18px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:32px;
+      background:rgba(12,17,34,.82);
+      backdrop-filter: blur(16px);
+      box-shadow:var(--shadow);
+      display:grid;
+      grid-template-columns: var(--nav-w) 1fr;
+      gap:18px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .shell::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:linear-gradient(120deg, rgba(255,255,255,.04), transparent 35%, transparent 65%, rgba(244,191,87,.05));
+    }
+
+    .nav{
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--stroke);
+      border-radius:26px;
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      min-height:0;
+    }
+
+    .brand{
+      padding:14px;
+      border-radius:18px;
+      background:linear-gradient(135deg, rgba(91,108,255,.22), rgba(255,140,198,.14));
+      border:1px solid rgba(255,255,255,.12);
+      margin-bottom:14px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .brand::after{
+      content:"";
+      position:absolute;
+      width:140px;
+      height:140px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(244,191,87,.20), transparent 60%);
+      right:-30px;
+      top:-40px;
+      pointer-events:none;
+    }
+
+    .eyebrow{
+      font-size:.72rem;
+      text-transform:uppercase;
+      letter-spacing:.18em;
+      color:var(--gold);
+      margin-bottom:8px;
+      font-weight:700;
+    }
+
+    h1{
+      font-size:1.35rem;
+      line-height:1.18;
+      margin:0 0 8px;
+      font-weight:800;
+    }
+
+    .sub{
+      margin:0;
+      color:var(--muted);
+      font-size:.88rem;
+      line-height:1.45;
+    }
+
+    .progress-box{
+      margin-top:12px;
+      padding:10px 12px;
+      background:rgba(12,17,34,.45);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:14px;
+    }
+
+    .progress-meta{
+      display:flex;
+      justify-content:space-between;
+      font-size:.78rem;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+
+    .progress-track{
+      height:8px;
+      background:rgba(255,255,255,.08);
+      border-radius:999px;
+      overflow:hidden;
+    }
+
+    .progress-fill{
+      height:100%;
+      width:6.66%;
+      background:linear-gradient(90deg,var(--gold),#ffd78b);
+      border-radius:999px;
+      transition:width .28s ease;
+    }
+
+    .tab-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:8px;
+      overflow:auto;
+      padding-right:4px;
+    }
+
+    .tab-list::-webkit-scrollbar,.content-panel::-webkit-scrollbar,.mini-scroll::-webkit-scrollbar{width:10px;height:10px}
+    .tab-list::-webkit-scrollbar-thumb,.content-panel::-webkit-scrollbar-thumb,.mini-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.10);border-radius:999px;border:2px solid transparent;background-clip:padding-box}
+
+    .tab-btn{
+      text-align:left;
+      border:none;
+      cursor:pointer;
+      color:var(--text);
+      border-radius:14px;
+      padding:11px 12px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:10px;
+      align-items:center;
+      transition:all .2s ease;
+      font:inherit;
+    }
+
+    .tab-btn:hover{transform:translateX(2px);background:rgba(255,255,255,.06)}
+    .tab-btn.active{
+      background:linear-gradient(135deg, rgba(91,108,255,.24), rgba(255,140,198,.10));
+      border-color:rgba(255,255,255,.18);
+      box-shadow:0 12px 30px rgba(0,0,0,.2);
+    }
+
+    .tab-num{
+      width:32px;height:32px;border-radius:10px;
+      display:grid;place-items:center;
+      background:rgba(255,255,255,.08);
+      color:var(--gold);
+      font-weight:800;
+      font-size:.82rem;
+      flex-shrink:0;
+    }
+
+    .tab-title{font-size:.92rem;font-weight:700;line-height:1.2}
+    .tab-status{
+      width:10px;height:10px;border-radius:50%;
+      background:rgba(255,255,255,.16);
+      box-shadow:0 0 0 4px rgba(255,255,255,.04);
+      transition:all .2s ease;
+    }
+    .tab-btn.active .tab-status{background:var(--green); box-shadow:0 0 0 4px rgba(120,214,166,.15)}
+
+    .content-shell{
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--stroke);
+      border-radius:26px;
+      overflow:hidden;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .topbar{
+      padding:14px 18px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      min-height:72px;
+      background:rgba(9,13,27,.32);
+    }
+
+    .chapter-wrap h2{
+      margin:0 0 6px;
+      font-size:1.28rem;
+      line-height:1.15;
+    }
+
+    .chapter-wrap p{
+      margin:0;
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.42;
+      max-width:860px;
+    }
+
+    .cue{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      color:var(--muted);
+      font-size:.82rem;
+      white-space:nowrap;
+    }
+
+    .cue-dot{width:9px;height:9px;border-radius:50%;background:var(--gold)}
+
+    .content-panel{
+      flex:1;
+      min-height:0;
+      overflow:auto;
+      padding:16px 18px 18px;
+    }
+
+    .section{display:none; animation:fade .24s ease}
+    .section.active{display:block}
+    @keyframes fade{from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:none}}
+
+    .grid{display:grid; gap:12px}
+    .cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+
+    .card,.flip-card,.mini-block,.tip-reveal,.quiz-card,.cta-box{
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:18px;
+      padding:14px;
+      box-shadow:0 8px 20px rgba(0,0,0,.12);
+    }
+
+    .card h3,.mini-block h3,.quiz-card h3,.cta-box h3{
+      margin:0 0 8px;
+      font-size:1rem;
+      line-height:1.2;
+    }
+
+    .card p,.mini-block p,.quiz-card p,.cta-box p, .card li, .mini-block li, .tip-body, .accordion-body, .label, .meta, .note-body{
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.5;
+    }
+
+    .stack{display:flex;flex-direction:column;gap:10px}
+    .label{font-size:.76rem;text-transform:uppercase;letter-spacing:.16em;color:var(--gold);font-weight:700}
+    .pill-row{display:flex;flex-wrap:wrap;gap:8px}
+    .pill{
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      font-size:.78rem;
+      color:#dbe3ff;
+    }
+
+    .icon-card{
+      display:flex;gap:12px;align-items:flex-start;
+      min-height:100%;
+    }
+
+    .icon-badge{
+      width:42px;height:42px;border-radius:14px;
+      display:grid;place-items:center;
+      font-size:1.1rem;
+      background:linear-gradient(135deg, rgba(91,108,255,.28), rgba(244,191,87,.18));
+      border:1px solid rgba(255,255,255,.12);
+      flex-shrink:0;
+    }
+
+    .checklist{display:grid;gap:8px;margin-top:8px}
+    .check-item{
+      display:flex;align-items:flex-start;gap:10px;
+      padding:9px 10px;border-radius:12px;
+      background:rgba(255,255,255,.04);
+    }
+    .check-item input{margin-top:3px; accent-color:var(--gold)}
+    .check-item.done{outline:1px solid rgba(120,214,166,.25); background:rgba(120,214,166,.08)}
+
+    .accordion-wrap{display:grid;gap:10px}
+    details.accordion{
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:16px;
+      background:rgba(255,255,255,.04);
+      overflow:hidden;
+    }
+    details.accordion summary{
+      list-style:none;
+      cursor:pointer;
+      padding:12px 14px;
+      font-weight:700;
+      display:flex;justify-content:space-between;align-items:center;gap:16px;
+    }
+    details.accordion summary::-webkit-details-marker{display:none}
+    details.accordion summary span:last-child{color:var(--gold);font-size:1.15rem}
+    .accordion-body{padding:0 14px 14px}
+
+    .tip-reveal button,.reveal-btn,.quiz-btn,.offer-btn,.small-btn{
+      border:none;
+      cursor:pointer;
+      padding:10px 12px;
+      border-radius:12px;
+      font:inherit;
+      font-weight:700;
+      transition:transform .18s ease, opacity .18s ease;
+    }
+    .tip-reveal button:hover,.reveal-btn:hover,.quiz-btn:hover,.offer-btn:hover,.small-btn:hover{transform:translateY(-1px)}
+    .tip-reveal button,.reveal-btn,.offer-btn{
+      background:linear-gradient(135deg,var(--blue),#7d8cff);
+      color:white;
+    }
+    .small-btn,.quiz-btn{background:rgba(255,255,255,.08);color:var(--text);border:1px solid rgba(255,255,255,.08)}
+    .tip-body[hidden], .reveal-body[hidden]{display:none}
+    .reveal-body{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+
+    .flip-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .flip-card{
+      perspective:1000px;
+      padding:0;
+      min-height:142px;
+      background:transparent;
+      border:none;
+      box-shadow:none;
+    }
+    .flip-inner{
+      position:relative;
+      width:100%; height:100%;
+      transform-style:preserve-3d;
+      transition:transform .5s ease;
+      min-height:142px;
+    }
+    .flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+    .flip-face{
+      position:absolute; inset:0;
+      backface-visibility:hidden;
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:18px;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+    .flip-face.back{transform:rotateY(180deg); background:linear-gradient(135deg, rgba(91,108,255,.18), rgba(244,191,87,.09))}
+    .flip-term{font-size:1rem;font-weight:800;margin-bottom:8px}
+    .flip-hint{font-size:.78rem;color:var(--gold);font-weight:700}
+
+    .quiz-options{display:grid;gap:8px;margin-top:10px}
+    .quiz-option{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.09);
+      background:rgba(255,255,255,.04);
+      cursor:pointer;
+      text-align:left;
+      color:var(--text);
+      font:inherit;
+      transition:all .18s ease;
+    }
+    .quiz-option:hover{background:rgba(255,255,255,.07)}
+    .quiz-option.correct{background:rgba(120,214,166,.14); border-color:rgba(120,214,166,.35)}
+    .quiz-option.wrong{background:rgba(255,140,198,.12); border-color:rgba(255,140,198,.28)}
+    .quiz-feedback{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04);display:none}
+    .quiz-feedback.show{display:block}
+
+    .cheat{
+      display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:6px;
+    }
+    .cheat-item{
+      padding:11px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)
+    }
+    .cheat-item strong{display:block;margin-bottom:4px}
+
+    .note-box{
+      padding:12px 13px;
+      border-radius:15px;
+      border:1px solid rgba(244,191,87,.22);
+      background:linear-gradient(135deg, rgba(244,191,87,.10), rgba(255,255,255,.03));
+    }
+    .note-title{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.13em;color:var(--gold);margin-bottom:6px}
+
+    .stat{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:12px;border-radius:15px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)
+    }
+    .stat strong{font-size:1.35rem}
+
+    .cta-box{
+      background:linear-gradient(135deg, rgba(91,108,255,.24), rgba(255,140,198,.10));
+      border-color:rgba(255,255,255,.15);
+    }
+
+    .offer-btn{display:inline-flex;align-items:center;gap:8px;margin-top:10px}
+
+    .mini-scroll{max-height:290px;overflow:auto;padding-right:4px}
+
+    @media (max-width: 1180px){
+      :root{--nav-w:250px}
+      .cols-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .flip-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media (max-width: 920px){
+      body{overflow:auto}
+      .shell{
+        width:min(98vw, 98vw);
+        height:auto;
+        min-height:95vh;
+        margin:12px auto;
+        grid-template-columns:1fr;
+      }
+      .nav{min-height:unset}
+      .tab-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .content-shell{min-height:72vh}
+      .cols-2,.cols-3,.cols-4,.cheat,.flip-grid{grid-template-columns:1fr}
+      .topbar{align-items:flex-start;flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="nav">
+      <div class="brand">
+        <div class="eyebrow">Interactive e-book</div>
+        <h1>Click, Create, Cash In</h1>
+        <p class="sub">An Interactive AI Glow-Up Guide to Starting Digital Products — built for beginners who want simple steps, not chaos.</p>
+        <div class="progress-box">
+          <div class="progress-meta">
+            <span id="chapterCount">Chapter 1 of 15</span>
+            <span id="progressPercent">7%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+      </div>
+
+      <div class="tab-list" id="tabList">
+        <button class="tab-btn active" data-tab="start-here"><span class="tab-num">01</span><span class="tab-title">Start Here</span><span class="tab-status"></span></button>
+        <button class="tab-btn" data-tab="learn"><span class="tab-num">02</span><span class="tab-title">What You’ll Learn</span><span class="tab-status"></span></button>
+        <button class="tab-btn" data-tab="dp101"><span class="tab-num">03</span><span class="tab-title">Digital Products 101</span><span class="tab-status"></span></button>
+        <button class="tab-btn" data-tab="why-work"><span class="tab-num">04</span><span class="tab-title">Why Digital Products Work</span><span class="tab-status"></span></button>
+        <button class="tab-btn" data-tab="niche"><span class="tab-num">05</span><span class="tab-title">Find Your Niche</span><span class="tab-status"></span></button>
+        <button class="tab-btn" data-tab="validate"><span class="tab-num">06</span><span class="tab-title">Validate Your Niche</span><span class="tab-status"></span></button>
+        <button class="tab-btn" data-tab="product"><span class="tab-num">07</span><span class="tab-title">Choose Your Product</span><span class="tab-status"></span></button>
+        <button class="tab-btn" data-tab="tools"><span class="tab-num">08</span><span class="tab-title">Free Tools</span><span class="tab-status"></span></button>
+        <button class="tab-btn" data-tab="build"><span class="tab-num">09</span><span class="tab-title">Build It Step by Step</span><span class="tab-status"></span></button>
+        <button class="tab-btn" data-tab="design"><span class="tab-num">10</span><span class="tab-title">Design That Looks Good</span><span class="tab-status"></span></button>
+        <button class="tab-btn" data-tab="glossary"><span class="tab-num">11</span><span class="tab-title">Glow-Up Glossary</span><span class="tab-status"></span></button>
+        <button class="tab-btn" data-tab="mistakes"><span class="tab-num">12</span><span class="tab-title">Beginner Mistakes</span><span class="tab-status"></span></button>
+        <button class="tab-btn" data-tab="quiz"><span class="tab-num">13</span><span class="tab-title">Quick Quiz</span><span class="tab-status"></span></button>
+        <button class="tab-btn" data-tab="action"><span class="tab-num">14</span><span class="tab-title">Action Plan</span><span class="tab-status"></span></button>
+        <button class="tab-btn" data-tab="offer"><span class="tab-num">15</span><span class="tab-title">Starter Kit Offer</span><span class="tab-status"></span></button>
+      </div>
+    </aside>
+
+    <main class="content-shell">
+      <div class="topbar">
+        <div class="chapter-wrap">
+          <h2 id="chapterTitle">Start Here</h2>
+          <p id="chapterDesc">A soft landing before the tech stuff. This chapter helps you stop overthinking and understand what you’re actually building.</p>
+        </div>
+        <div class="cue"><span class="cue-dot"></span><span id="cueText">Tap the left tabs to move through the ebook.</span></div>
+      </div>
+
+      <div class="content-panel">
+
+        <section class="section active" id="start-here">
+          <div class="grid cols-2">
+            <div class="card stack">
+              <div class="label">Welcome</div>
+              <h3>You do not need to know everything before you start.</h3>
+              <p>Digital products can feel bigger than they are. Most beginners get stuck because they think they need a full brand, a website, ten products, and some magical business personality. You don’t. You need one useful idea and a simple way to package it.</p>
+              <div class="pill-row">
+                <span class="pill">Beginner-friendly</span>
+                <span class="pill">No fancy tech required</span>
+                <span class="pill">Start messy, improve later</span>
+              </div>
+              <div class="note-box">
+                <div class="note-title">Experience note</div>
+                <div class="note-body">Most people don’t quit because the product is hard. They quit because they keep changing the idea before they finish the first version.</div>
+              </div>
+            </div>
+            <div class="card stack">
+              <div class="label">Before you click around</div>
+              <div class="checklist">
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>I’m open to starting with one simple product.</span></label>
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>I understand my first product does not need to be perfect.</span></label>
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>I’m willing to test ideas instead of guessing forever.</span></label>
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>I’ll focus on helping one type of person first.</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid cols-3" style="margin-top:12px;">
+            <div class="card icon-card">
+              <div class="icon-badge">✨</div>
+              <div><h3>What this is</h3><p>A click-through e-book with compact lessons, reminders, and action steps you can actually use.</p></div>
+            </div>
+            <div class="card icon-card">
+              <div class="icon-badge">🧠</div>
+              <div><h3>What this is not</h3><p>It’s not a giant info dump, a stiff course, or a bunch of fluffy “girlboss” nonsense.</p></div>
+            </div>
+            <div class="card icon-card">
+              <div class="icon-badge">💸</div>
+              <div><h3>The real goal</h3><p>Create one useful product people want badly enough to click, buy, and use.</p></div>
+            </div>
+          </div>
+
+          <div class="tip-reveal" style="margin-top:12px;">
+            <h3>Need a confidence boost?</h3>
+            <button data-reveal="tip-start">Reveal beginner truth</button>
+            <div class="tip-body" id="tip-start" hidden>The people selling digital products were not born knowing Canva, prompts, PDFs, thumbnails, funnels, or file delivery. They learned one annoying little step at a time. So will you.</div>
+          </div>
+        </section>
+
+        <section class="section" id="learn">
+          <div class="grid cols-2">
+            <div class="card stack">
+              <div class="label">Inside this guide</div>
+              <div class="cheat">
+                <div class="cheat-item"><strong>What digital products are</strong><span>Plain-English breakdowns, no confusing business speak.</span></div>
+                <div class="cheat-item"><strong>How to pick a niche</strong><span>Questions and filters so you stop choosing random stuff.</span></div>
+                <div class="cheat-item"><strong>What to make first</strong><span>Simple product ideas that are realistic for beginners.</span></div>
+                <div class="cheat-item"><strong>How to make it look good</strong><span>Design tips that make your product look clean and sellable.</span></div>
+              </div>
+            </div>
+            <div class="card stack">
+              <div class="label">What you’ll be able to do</div>
+              <div class="stat"><span>Choose a starting niche</span><strong>✓</strong></div>
+              <div class="stat"><span>Validate an idea before wasting time</span><strong>✓</strong></div>
+              <div class="stat"><span>Pick a beginner product format</span><strong>✓</strong></div>
+              <div class="stat"><span>Use free tools to build version one</span><strong>✓</strong></div>
+            </div>
+          </div>
+
+          <div class="accordion-wrap" style="margin-top:12px;">
+            <details class="accordion" open>
+              <summary><span>What you are not expected to know yet</span><span>＋</span></summary>
+              <div class="accordion-body">You do not need to know branding, email marketing, copyright law in full, advanced design, SEO, or funnel strategy just to create your first digital product. Those things matter later. Right now, usefulness matters first.</div>
+            </details>
+            <details class="accordion">
+              <summary><span>What actually matters in the beginning</span><span>＋</span></summary>
+              <div class="accordion-body">Pick a clear problem, make a simple solution, package it cleanly, and speak to one person. That beats fancy every damn time.</div>
+            </details>
+            <details class="accordion">
+              <summary><span>What beginners usually overthink</span><span>＋</span></summary>
+              <div class="accordion-body">Names, logos, colors, pricing before the product exists, and whether other people are already doing it. Yes, other people are doing it. Your version still matters.</div>
+            </details>
+          </div>
+        </section>
+
+        <section class="section" id="dp101">
+          <div class="grid cols-3">
+            <div class="card stack"><div class="label">Definition</div><h3>What is a digital product?</h3><p>A digital product is something a person can buy, download, access, or use online without you mailing a physical item.</p></div>
+            <div class="card stack"><div class="label">Examples</div><h3>What counts?</h3><p>E-books, templates, planners, guides, prompt packs, printables, swipe files, mockups, worksheets, mini classes, and trackers.</p></div>
+            <div class="card stack"><div class="label">Not magic</div><h3>What it really is</h3><p>You are packaging helpful information, design, organization, or shortcuts into something people can use faster.</p></div>
+          </div>
+
+          <div class="grid cols-2" style="margin-top:12px;">
+            <div class="card stack">
+              <h3>Beginner-friendly digital product ideas</h3>
+              <div class="pill-row">
+                <span class="pill">Checklist</span><span class="pill">Prompt pack</span><span class="pill">Planner</span><span class="pill">Workbook</span><span class="pill">Canva template</span><span class="pill">Tracker</span><span class="pill">Journal</span><span class="pill">Swipe file</span>
+              </div>
+              <div class="note-box"><div class="note-title">Experience note</div><div class="note-body">A product does not have to be huge to be useful. A simple one-page cheat sheet can sometimes outsell a 50-page monster nobody finishes.</div></div>
+            </div>
+            <div class="card stack">
+              <h3>Quick knowledge check</h3>
+              <p>Which of these is the strongest beginner product to start with?</p>
+              <div class="pill-row"><span class="pill">A 10-module course with 40 lessons</span><span class="pill">A clean checklist that solves one small problem</span><span class="pill">A membership site with five tiers</span></div>
+              <button class="reveal-btn" data-reveal="dp-answer">Show answer</button>
+              <div class="reveal-body" id="dp-answer" hidden>The clean checklist. It’s fast to make, easy to test, and teaches you packaging without dragging you into a full production circus.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="why-work">
+          <div class="grid cols-2">
+            <div class="card stack">
+              <div class="label">Why people start here</div>
+              <h3>Digital products are beginner-friendly because they can start simple.</h3>
+              <div class="mini-scroll stack">
+                <div class="stat"><span>No inventory to store</span><strong>01</strong></div>
+                <div class="stat"><span>No shipping chaos</span><strong>02</strong></div>
+                <div class="stat"><span>Easy to update later</span><strong>03</strong></div>
+                <div class="stat"><span>Can be sold more than once</span><strong>04</strong></div>
+                <div class="stat"><span>Lets you turn knowledge into income</span><strong>05</strong></div>
+              </div>
+            </div>
+            <div class="card stack">
+              <div class="label">What beginners need to hear</div>
+              <p>People don’t buy because your product is digital. They buy because it saves time, removes confusion, gives a shortcut, or makes them feel more capable.</p>
+              <div class="accordion-wrap">
+                <details class="accordion" open>
+                  <summary><span>What sells fastest</span><span>＋</span></summary>
+                  <div class="accordion-body">Products that solve a small, clear problem usually move faster than broad “everything” products.</div>
+                </details>
+                <details class="accordion">
+                  <summary><span>What creates trust</span><span>＋</span></summary>
+                  <div class="accordion-body">Clear titles, simple design, useful content, and not making the buyer guess what the heck they’re getting.</div>
+                </details>
+              </div>
+              <div class="note-box"><div class="note-title">Experience note</div><div class="note-body">A lot of beginners think the money comes from being everywhere online. Nope. It usually comes from being clear enough that the right person says, “That’s exactly what I need.”</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="niche">
+          <div class="grid cols-2">
+            <div class="card stack">
+              <div class="label">Niche finder</div>
+              <h3>Ask yourself these three questions</h3>
+              <div class="checklist">
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>What do people ask me for help with over and over?</span></label>
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>What problem do I understand because I’ve lived it?</span></label>
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>What do I enjoy enough to talk about more than once?</span></label>
+              </div>
+              <button class="reveal-btn" data-reveal="niche-truth">Reveal niche truth</button>
+              <div class="reveal-body" id="niche-truth" hidden>Your niche does not need to be your entire identity. It just needs to be a lane people can recognize.</div>
+            </div>
+            <div class="card stack">
+              <div class="label">Profitable niche directions</div>
+              <div class="pill-row">
+                <span class="pill">Wellness</span><span class="pill">Weight loss</span><span class="pill">Budgeting</span><span class="pill">Faith</span><span class="pill">Productivity</span><span class="pill">Business</span><span class="pill">Social media</span><span class="pill">Beauty</span><span class="pill">Self-care</span><span class="pill">Templates</span><span class="pill">Parenting</span><span class="pill">Digital creator help</span>
+              </div>
+              <div class="note-box"><div class="note-title">Experience note</div><div class="note-body">If you choose a niche that is too broad, your product starts sounding like it’s for everybody. That usually means it connects with nobody.</div></div>
+            </div>
+          </div>
+
+          <div class="accordion-wrap" style="margin-top:12px;">
+            <details class="accordion" open>
+              <summary><span>Bad niche choice vs better niche choice</span><span>＋</span></summary>
+              <div class="accordion-body"><strong>Too broad:</strong> health. <br><strong>Better:</strong> meal planning for busy women over 40. <br><strong>Too broad:</strong> business. <br><strong>Better:</strong> digital products for beginner content creators.</div>
+            </details>
+            <details class="accordion">
+              <summary><span>Three signs your niche has potential</span><span>＋</span></summary>
+              <div class="accordion-body">People talk about the problem, spend time trying to fix it, and want a shortcut. That’s a damn good sign.</div>
+            </details>
+          </div>
+        </section>
+
+        <section class="section" id="validate">
+          <div class="grid cols-3">
+            <div class="card icon-card"><div class="icon-badge">🔎</div><div><h3>Check what exists</h3><p>Search Etsy, Payhip, TikTok, Pinterest, and Google. Look for repeated problems and repeated product types.</p></div></div>
+            <div class="card icon-card"><div class="icon-badge">💬</div><div><h3>Listen to the words</h3><p>Pay attention to what people say they’re confused by, tired of, or trying to fix.</p></div></div>
+            <div class="card icon-card"><div class="icon-badge">📌</div><div><h3>Notice patterns</h3><p>If you keep seeing similar products, that does not mean it’s too crowded. It usually means the market is alive.</p></div></div>
+          </div>
+
+          <div class="grid cols-2" style="margin-top:12px;">
+            <div class="card stack">
+              <h3>Mini validation checklist</h3>
+              <div class="checklist">
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>I found people already talking about this problem.</span></label>
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>I found other products solving this in some way.</span></label>
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>I can explain what makes my version useful.</span></label>
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>I can picture who would buy it.</span></label>
+              </div>
+            </div>
+            <div class="card stack">
+              <h3>What validation is not</h3>
+              <p>Validation is not asking your cousin if your product idea is cute. Validation means seeing proof that real people care about the problem.</p>
+              <div class="note-box"><div class="note-title">Experience note</div><div class="note-body">Beginners often try to create a product before checking demand. That’s backwards. Check the room before you decorate the damn stage.</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="product">
+          <div class="grid cols-2">
+            <div class="card stack">
+              <div class="label">Pick your format</div>
+              <h3>Best first product types</h3>
+              <div class="accordion-wrap">
+                <details class="accordion" open>
+                  <summary><span>Checklist or cheat sheet</span><span>＋</span></summary>
+                  <div class="accordion-body">Best when people need a quick process, reminders, or a simple list they can use fast.</div>
+                </details>
+                <details class="accordion">
+                  <summary><span>Workbook or guide</span><span>＋</span></summary>
+                  <div class="accordion-body">Best when people need structure, reflection prompts, or a step-by-step path.</div>
+                </details>
+                <details class="accordion">
+                  <summary><span>Template or swipe file</span><span>＋</span></summary>
+                  <div class="accordion-body">Best when people want a shortcut, done-for-you structure, or wording help.</div>
+                </details>
+              </div>
+            </div>
+            <div class="card stack">
+              <div class="label">Fast product matcher</div>
+              <p><strong>If your audience needs speed:</strong> make a cheat sheet.</p>
+              <p><strong>If your audience needs clarity:</strong> make a guide.</p>
+              <p><strong>If your audience needs help doing the thing:</strong> make a template.</p>
+              <p><strong>If your audience needs accountability:</strong> make a tracker or planner.</p>
+              <button class="reveal-btn" data-reveal="product-truth">Show what beginners mess up</button>
+              <div class="reveal-body" id="product-truth" hidden>They choose a product format that looks impressive instead of one that matches the problem. Start with function, not ego.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="tools">
+          <div class="grid cols-4">
+            <div class="card icon-card"><div class="icon-badge">🤖</div><div><h3>ChatGPT</h3><p>Brainstorm, outline, rewrite, simplify, and help you move faster.</p></div></div>
+            <div class="card icon-card"><div class="icon-badge">🎨</div><div><h3>Canva</h3><p>Design your guide, checklist, planner, workbook, or template without losing your mind.</p></div></div>
+            <div class="card icon-card"><div class="icon-badge">📝</div><div><h3>Google Docs</h3><p>Draft content fast before making it pretty.</p></div></div>
+            <div class="card icon-card"><div class="icon-badge">📂</div><div><h3>Drive or Dropbox</h3><p>Store your files and keep versions organized.</p></div></div>
+          </div>
+
+          <div class="grid cols-2" style="margin-top:12px;">
+            <div class="card stack">
+              <h3>How beginners can use AI without getting weird about it</h3>
+              <ul>
+                <li>Ask for outline ideas.</li>
+                <li>Ask for beginner-friendly explanations.</li>
+                <li>Ask for title ideas and section names.</li>
+                <li>Ask for rewriting and simplification.</li>
+              </ul>
+              <div class="note-box"><div class="note-title">Experience note</div><div class="note-body">AI should support your thinking, not replace your brain. If the output sounds robotic, dry, or fake, keep editing until it sounds like a real human wrote it.</div></div>
+            </div>
+            <div class="card stack">
+              <h3>Tool cheat sheet</h3>
+              <div class="cheat">
+                <div class="cheat-item"><strong>Need ideas?</strong><span>Use ChatGPT.</span></div>
+                <div class="cheat-item"><strong>Need design?</strong><span>Use Canva.</span></div>
+                <div class="cheat-item"><strong>Need writing space?</strong><span>Use Docs.</span></div>
+                <div class="cheat-item"><strong>Need storage?</strong><span>Use Drive.</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="build">
+          <div class="card stack">
+            <div class="label">The build path</div>
+            <div class="grid cols-4">
+              <div class="mini-block"><h3>1. Pick one problem</h3><p>Keep it small and clear.</p></div>
+              <div class="mini-block"><h3>2. Outline the fix</h3><p>What does the buyer need to know or do?</p></div>
+              <div class="mini-block"><h3>3. Draft it simply</h3><p>Messy first. Pretty later.</p></div>
+              <div class="mini-block"><h3>4. Design and export</h3><p>Make it clean, save it, and test it.</p></div>
+            </div>
+          </div>
+
+          <div class="accordion-wrap" style="margin-top:12px;">
+            <details class="accordion" open>
+              <summary><span>Step 1: Write the product promise</span><span>＋</span></summary>
+              <div class="accordion-body">Finish this sentence: “This product helps ___ do ___ without ___.” That sentence keeps you focused.</div>
+            </details>
+            <details class="accordion">
+              <summary><span>Step 2: Make a basic outline</span><span>＋</span></summary>
+              <div class="accordion-body">List the key steps, questions, examples, or reminders the buyer needs. Do not try to make it beautiful yet.</div>
+            </details>
+            <details class="accordion">
+              <summary><span>Step 3: Fill in the pages</span><span>＋</span></summary>
+              <div class="accordion-body">Use plain language, clean headings, and short sections. People need usable, not exhausting.</div>
+            </details>
+            <details class="accordion">
+              <summary><span>Step 4: Export and test</span><span>＋</span></summary>
+              <div class="accordion-body">Download the file, open it, click through it, and make sure the buyer experience is smooth.</div>
+            </details>
+          </div>
+        </section>
+
+        <section class="section" id="design">
+          <div class="grid cols-2">
+            <div class="card stack">
+              <div class="label">Design that sells better</div>
+              <h3>Keep it clean, readable, and consistent.</h3>
+              <div class="checklist">
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>Use 1 to 2 fonts, not seven.</span></label>
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>Use enough contrast so text is easy to read.</span></label>
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>Repeat colors and heading styles for consistency.</span></label>
+                <label class="check-item"><input type="checkbox" class="mini-check" /> <span>Leave some room, but don’t waste half the page.</span></label>
+              </div>
+            </div>
+            <div class="card stack">
+              <div class="label">What makes products look cheap</div>
+              <div class="pill-row">
+                <span class="pill">Too many fonts</span>
+                <span class="pill">Hard-to-read colors</span>
+                <span class="pill">Crowded layouts</span>
+                <span class="pill">Random clip art</span>
+                <span class="pill">No clear hierarchy</span>
+                <span class="pill">Messy alignment</span>
+              </div>
+              <div class="note-box"><div class="note-title">Experience note</div><div class="note-body">Premium does not mean busy. A lot of people add too much trying to make it look expensive. Clean usually wins.</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="glossary">
+          <div class="card stack" style="margin-bottom:12px;">
+            <div class="label">Flip the cards</div>
+            <h3>Tap a term to see the plain-English meaning.</h3>
+          </div>
+          <div class="flip-grid">
+            <button class="flip-card" type="button"><span class="flip-inner"><span class="flip-face front"><span><div class="flip-term">Niche</div><p>A clear topic or audience lane.</p></span><span class="flip-hint">Tap to flip</span></span><span class="flip-face back"><span><div class="flip-term">Niche</div><p>The group or problem you focus on so people know your product is for them.</p></span><span class="flip-hint">Tap again</span></span></span></button>
+            <button class="flip-card" type="button"><span class="flip-inner"><span class="flip-face front"><span><div class="flip-term">Lead Magnet</div><p>A freebie with a purpose.</p></span><span class="flip-hint">Tap to flip</span></span><span class="flip-face back"><span><div class="flip-term">Lead Magnet</div><p>A free item used to attract people and grow interest, usually tied to your paid offers.</p></span><span class="flip-hint">Tap again</span></span></span></button>
+            <button class="flip-card" type="button"><span class="flip-inner"><span class="flip-face front"><span><div class="flip-term">Template</div><p>A shortcut product.</p></span><span class="flip-hint">Tap to flip</span></span><span class="flip-face back"><span><div class="flip-term">Template</div><p>A ready-made layout or structure your buyer can fill in or customize.</p></span><span class="flip-hint">Tap again</span></span></span></button>
+            <button class="flip-card" type="button"><span class="flip-inner"><span class="flip-face front"><span><div class="flip-term">Validation</div><p>Proof people care.</p></span><span class="flip-hint">Tap to flip</span></span><span class="flip-face back"><span><div class="flip-term">Validation</div><p>Evidence that the problem exists and people are already looking for help with it.</p></span><span class="flip-hint">Tap again</span></span></span></button>
+            <button class="flip-card" type="button"><span class="flip-inner"><span class="flip-face front"><span><div class="flip-term">Offer</div><p>What you’re selling.</p></span><span class="flip-hint">Tap to flip</span></span><span class="flip-face back"><span><div class="flip-term">Offer</div><p>The product plus the promise, benefit, and reason someone should buy it.</p></span><span class="flip-hint">Tap again</span></span></span></button>
+            <button class="flip-card" type="button"><span class="flip-inner"><span class="flip-face front"><span><div class="flip-term">CTA</div><p>Your action line.</p></span><span class="flip-hint">Tap to flip</span></span><span class="flip-face back"><span><div class="flip-term">CTA</div><p>Call to action. The words that tell the buyer what to do next, like buy now or grab the guide.</p></span><span class="flip-hint">Tap again</span></span></span></button>
+            <button class="flip-card" type="button"><span class="flip-inner"><span class="flip-face front"><span><div class="flip-term">Mockup</div><p>A product preview.</p></span><span class="flip-hint">Tap to flip</span></span><span class="flip-face back"><span><div class="flip-term">Mockup</div><p>A styled image that shows what your product looks like before someone buys it.</p></span><span class="flip-hint">Tap again</span></span></span></button>
+            <button class="flip-card" type="button"><span class="flip-inner"><span class="flip-face front"><span><div class="flip-term">Evergreen</div><p>Useful over time.</p></span><span class="flip-hint">Tap to flip</span></span><span class="flip-face back"><span><div class="flip-term">Evergreen</div><p>A product people can keep buying because it solves a lasting problem, not just a temporary trend.</p></span><span class="flip-hint">Tap again</span></span></span></button>
+          </div>
+        </section>
+
+        <section class="section" id="mistakes">
+          <div class="grid cols-2">
+            <div class="card stack">
+              <div class="label">Common beginner mistakes</div>
+              <div class="accordion-wrap">
+                <details class="accordion" open>
+                  <summary><span>Trying to make too much at once</span><span>＋</span></summary>
+                  <div class="accordion-body">One product beats five unfinished ideas living in your tabs like digital ghosts.</div>
+                </details>
+                <details class="accordion">
+                  <summary><span>Copying without understanding</span><span>＋</span></summary>
+                  <div class="accordion-body">Inspiration is fine. Blind copying makes your product weak and forgettable.</div>
+                </details>
+                <details class="accordion">
+                  <summary><span>Obsessing over the logo before the product</span><span>＋</span></summary>
+                  <div class="accordion-body">Cute branding won’t save a useless product. Build the value first.</div>
+                </details>
+                <details class="accordion">
+                  <summary><span>Never testing anything</span><span>＋</span></summary>
+                  <div class="accordion-body">You learn by releasing, not by hiding the file and tweaking it forever.</div>
+                </details>
+              </div>
+            </div>
+            <div class="card stack">
+              <h3>What actually matters more than perfection</h3>
+              <div class="cheat">
+                <div class="cheat-item"><strong>Clarity</strong><span>Can people tell what it helps with?</span></div>
+                <div class="cheat-item"><strong>Usability</strong><span>Can they actually use it easily?</span></div>
+                <div class="cheat-item"><strong>Relevance</strong><span>Does it solve a real problem?</span></div>
+                <div class="cheat-item"><strong>Completion</strong><span>Did you finish the thing?</span></div>
+              </div>
+              <div class="note-box"><div class="note-title">Experience note</div><div class="note-body">Some beginners sit on a product for three months fixing tiny stuff no buyer would ever notice. Meanwhile, someone else launches a cleaner version two weeks later and learns faster.</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="quiz">
+          <div class="grid cols-2">
+            <div class="quiz-card" data-answer="b">
+              <div class="label">Question 1</div>
+              <h3>What makes a strong first digital product?</h3>
+              <div class="quiz-options">
+                <button class="quiz-option" data-choice="a">Something huge so people think it’s worth more</button>
+                <button class="quiz-option" data-choice="b">Something clear and useful that solves one problem</button>
+                <button class="quiz-option" data-choice="c">Something trendy even if you don’t understand it</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+            <div class="quiz-card" data-answer="c">
+              <div class="label">Question 2</div>
+              <h3>What is niche validation?</h3>
+              <div class="quiz-options">
+                <button class="quiz-option" data-choice="a">Making the product logo first</button>
+                <button class="quiz-option" data-choice="b">Asking one friend if they like the idea</button>
+                <button class="quiz-option" data-choice="c">Seeing signs that real people care about the problem</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+          </div>
+
+          <div class="grid cols-2" style="margin-top:12px;">
+            <div class="quiz-card" data-answer="a">
+              <div class="label">Question 3</div>
+              <h3>Which tool pairing makes the most sense for beginners?</h3>
+              <div class="quiz-options">
+                <button class="quiz-option" data-choice="a">ChatGPT for ideas and Canva for design</button>
+                <button class="quiz-option" data-choice="b">A custom app and expensive software stack</button>
+                <button class="quiz-option" data-choice="c">No tools at all, just vibes</button>
+              </div>
+              <div class="quiz-feedback"></div>
+            </div>
+            <div class="card stack">
+              <div class="label">Score hint</div>
+              <h3>What a good score means</h3>
+              <p>If you miss one, good. That means you found a gap before you wasted time making the wrong thing. Cute little reality check.</p>
+              <button class="small-btn" id="resetQuiz">Reset quiz</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="action">
+          <div class="grid cols-2">
+            <div class="card stack">
+              <div class="label">Your next move</div>
+              <h3>7-day beginner action plan</h3>
+              <div class="accordion-wrap">
+                <details class="accordion" open>
+                  <summary><span>Day 1: Pick the problem</span><span>＋</span></summary>
+                  <div class="accordion-body">Choose one audience and one problem. Keep it specific.</div>
+                </details>
+                <details class="accordion">
+                  <summary><span>Day 2: Validate the idea</span><span>＋</span></summary>
+                  <div class="accordion-body">Search the problem and look for signs of demand.</div>
+                </details>
+                <details class="accordion">
+                  <summary><span>Day 3: Choose the format</span><span>＋</span></summary>
+                  <div class="accordion-body">Pick checklist, guide, template, planner, or workbook.</div>
+                </details>
+                <details class="accordion">
+                  <summary><span>Day 4: Outline the content</span><span>＋</span></summary>
+                  <div class="accordion-body">Draft your sections and bullets before styling.</div>
+                </details>
+                <details class="accordion">
+                  <summary><span>Day 5: Build the first version</span><span>＋</span></summary>
+                  <div class="accordion-body">Create the file in Canva or Docs and finish version one.</div>
+                </details>
+                <details class="accordion">
+                  <summary><span>Day 6: Clean up the design</span><span>＋</span></summary>
+                  <div class="accordion-body">Fix spacing, headings, and readability.</div>
+                </details>
+                <details class="accordion">
+                  <summary><span>Day 7: Name it and prep to sell</span><span>＋</span></summary>
+                  <div class="accordion-body">Write the title, promise, and simple call to action.</div>
+                </details>
+              </div>
+            </div>
+            <div class="card stack">
+              <div class="label">Cheat-sheet recap</div>
+              <div class="cheat">
+                <div class="cheat-item"><strong>Keep it small</strong><span>Small and useful beats big and unfinished.</span></div>
+                <div class="cheat-item"><strong>Check demand</strong><span>Do not build in a vacuum.</span></div>
+                <div class="cheat-item"><strong>Use free tools</strong><span>Use what helps you move, not what looks fancy.</span></div>
+                <div class="cheat-item"><strong>Finish version one</strong><span>You can improve after launch.</span></div>
+              </div>
+              <div class="note-box"><div class="note-title">Experience note</div><div class="note-body">The first product is partly about making money and partly about teaching yourself how to finish. That second part matters more than people admit.</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="offer">
+          <div class="cta-box stack">
+            <div class="label">Starter kit</div>
+            <h3>Ready to stop guessing and actually make your first product?</h3>
+            <p>Your Starter Kit can include beginner prompts, niche idea pages, content outlines, title formulas, Canva guidance, and a simple action checklist so people don’t sit there frozen with 47 tabs open.</p>
+            <div class="grid cols-3">
+              <div class="mini-block"><h3>Prompt Help</h3><p>Use guided prompts to brainstorm smarter and faster.</p></div>
+              <div class="mini-block"><h3>Design Support</h3><p>Get layout and product ideas that actually look polished.</p></div>
+              <div class="mini-block"><h3>Launch Confidence</h3><p>Know what to do next instead of stalling out.</p></div>
+            </div>
+            <button class="offer-btn" id="offerButton">✨ Grab the Starter Kit</button>
+            <div class="reveal-body" id="offerReveal" hidden>This is your spot to plug in your real product link, shop button, lead magnet, or starter bundle. Swap this text with your actual call to action when you're ready to sell.</div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const chapterMeta = {
+      'start-here': ['Start Here', 'A soft landing before the tech stuff. This chapter helps you stop overthinking and understand what you’re actually building.', 'Tap the left tabs to move through the ebook.'],
+      'learn': ['What You’ll Learn', 'A clean overview of what this guide will help you understand, choose, and build.', 'Use the accordions to open quick breakdowns.'],
+      'dp101': ['Digital Products 101', 'What digital products are, what counts, and why simple beats overbuilt for beginners.', 'Use the quick reveal for the mini knowledge check.'],
+      'why-work': ['Why Digital Products Work', 'Why this business model makes sense for beginners who want low-overwhelm entry points.', 'Look for the experience note in this chapter.'],
+      'niche': ['Find Your Niche', 'Simple questions and filters to help you choose a topic that makes sense.', 'Check off the niche finder prompts as you think.'],
+      'validate': ['Validate Your Niche', 'How to stop guessing and look for real signs that people care about the problem.', 'Use the mini checklist before moving on.'],
+      'product': ['Choose Your Product', 'Match the problem to the right product format instead of picking randomly.', 'Open each product format to compare them quickly.'],
+      'tools': ['Free Tools', 'The easiest starter tools for ideas, writing, design, and file organization.', 'This chapter keeps the tool list simple on purpose.'],
+      'build': ['Build It Step by Step', 'A no-drama path from idea to first finished product.', 'Move through the build path in order.'],
+      'design': ['Design That Looks Good', 'How to make your product feel polished without making it busy or hard to read.', 'Use the checklist to review your design choices.'],
+      'glossary': ['Glow-Up Glossary', 'Flip-card definitions for terms beginners hear all the time.', 'Tap each card to flip it.'],
+      'mistakes': ['Beginner Mistakes', 'The usual traps that slow people down before they ever launch.', 'Open the mistake sections and steal the lesson.'],
+      'quiz': ['Quick Quiz', 'A fast check to see whether the basics actually landed.', 'Pick an answer to get instant feedback.'],
+      'action': ['Action Plan', 'Your compact 7-day path to choosing, building, and naming your first product.', 'This is your “stop thinking, start moving” chapter.'],
+      'offer': ['Starter Kit Offer', 'A polished place for your CTA, starter bundle, or next-step offer.', 'This section is built to plug into your real link later.']
+    };
+
+    const tabs = [...document.querySelectorAll('.tab-btn')];
+    const sections = [...document.querySelectorAll('.section')];
+    const chapterTitle = document.getElementById('chapterTitle');
+    const chapterDesc = document.getElementById('chapterDesc');
+    const cueText = document.getElementById('cueText');
+    const chapterCount = document.getElementById('chapterCount');
+    const progressPercent = document.getElementById('progressPercent');
+    const progressFill = document.getElementById('progressFill');
+
+    function activateTab(id){
+      tabs.forEach((btn, index)=>{
+        const active = btn.dataset.tab === id;
+        btn.classList.toggle('active', active);
+        if(active){
+          const chapterNum = index + 1;
+          const pct = Math.round((chapterNum / tabs.length) * 100);
+          chapterCount.textContent = `Chapter ${chapterNum} of ${tabs.length}`;
+          progressPercent.textContent = `${pct}%`;
+          progressFill.style.width = `${pct}%`;
+        }
+      });
+      sections.forEach(sec=>sec.classList.toggle('active', sec.id === id));
+      const [title, desc, cue] = chapterMeta[id];
+      chapterTitle.textContent = title;
+      chapterDesc.textContent = desc;
+      cueText.textContent = cue;
+      document.querySelector('.content-panel').scrollTop = 0;
+    }
+
+    tabs.forEach(btn=>btn.addEventListener('click', ()=>activateTab(btn.dataset.tab)));
+
+    document.querySelectorAll('[data-reveal]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const target = document.getElementById(btn.dataset.reveal);
+        const hidden = target.hasAttribute('hidden');
+        if(hidden){
+          target.removeAttribute('hidden');
+          btn.textContent = btn.textContent.includes('Reveal') || btn.textContent.includes('Show') ? 'Hide' : 'Hide';
+        } else {
+          target.setAttribute('hidden','');
+          if(btn.id !== 'offerButton'){
+            btn.textContent = btn.textContent.includes('answer') ? 'Show answer' : btn.textContent.includes('truth') ? btn.textContent.replace('Hide','Show') : 'Reveal';
+          }
+        }
+      });
+    });
+
+    document.getElementById('offerButton').addEventListener('click', ()=>{
+      const reveal = document.getElementById('offerReveal');
+      const hidden = reveal.hasAttribute('hidden');
+      reveal.toggleAttribute('hidden');
+      document.getElementById('offerButton').textContent = hidden ? 'Hide starter kit note' : '✨ Grab the Starter Kit';
+    });
+
+    document.querySelectorAll('.flip-card').forEach(card=>{
+      card.addEventListener('click', ()=>card.classList.toggle('flipped'));
+    });
+
+    document.querySelectorAll('.mini-check').forEach(check=>{
+      check.addEventListener('change', e=>{
+        e.target.closest('.check-item').classList.toggle('done', e.target.checked);
+      });
+    });
+
+    const feedbackMap = {
+      correct: 'Nice. That’s the right answer.',
+      wrong: 'Not quite. Read the chapter note and try again.'
+    };
+
+    function wireQuiz(card){
+      const answer = card.dataset.answer;
+      const feedback = card.querySelector('.quiz-feedback');
+      card.querySelectorAll('.quiz-option').forEach(option=>{
+        option.addEventListener('click', ()=>{
+          card.querySelectorAll('.quiz-option').forEach(btn=>btn.classList.remove('correct','wrong'));
+          const right = option.dataset.choice === answer;
+          option.classList.add(right ? 'correct' : 'wrong');
+          const correctOption = card.querySelector(`.quiz-option[data-choice="${answer}"]`);
+          correctOption.classList.add('correct');
+          feedback.classList.add('show');
+          feedback.textContent = right ? feedbackMap.correct : `${feedbackMap.wrong} Correct answer: ${correctOption.textContent}`;
+        });
+      });
+    }
+    document.querySelectorAll('.quiz-card[data-answer]').forEach(wireQuiz);
+
+    document.getElementById('resetQuiz').addEventListener('click', ()=>{
+      document.querySelectorAll('.quiz-option').forEach(btn=>btn.classList.remove('correct','wrong'));
+      document.querySelectorAll('.quiz-feedback').forEach(box=>{
+        box.classList.remove('show');
+        box.textContent = '';
+      });
+    });
+  </script>
+</body>
+</html>
